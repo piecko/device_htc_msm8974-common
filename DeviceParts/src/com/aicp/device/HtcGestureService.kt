@@ -60,7 +60,7 @@ class HtcGestureService : Service() {
                 "Received event: $type"
             )
             when (type) {
-                GestureMotionSensor.SENSOR_GESTURE_DOUBLE_TAP -> mPowerManager.wakeUp(SystemClock.uptimeMillis())
+                GestureMotionSensor.SENSOR_GESTURE_DOUBLE_TAP -> mPowerManager.wakeUp(SystemClock.uptimeMillis(), PowerManager.WakeReason.WAKE_REASON_GESTURE , "htcGestureServiceWakeupCall")
                 GestureMotionSensor.SENSOR_GESTURE_SWIPE_UP, GestureMotionSensor.SENSOR_GESTURE_SWIPE_DOWN, GestureMotionSensor.SENSOR_GESTURE_SWIPE_LEFT, GestureMotionSensor.SENSOR_GESTURE_SWIPE_RIGHT -> handleGestureAction(
                     gestureToAction(type)
                 )
@@ -84,7 +84,7 @@ class HtcGestureService : Service() {
         sharedPrefs.registerOnSharedPreferenceChangeListener(mPrefListener)
         mPowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         mSensorWakeLock =
-            mPowerManager!!.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HtcGestureWakeLock")
+            mPowerManager!!.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HtcGestureWakeLock:")
         mCameraManager =
             (mContext as HtcGestureService).getSystemService(Context.CAMERA_SERVICE) as CameraManager
         mCameraManager!!.registerTorchCallback(mTorchCallback, null)
