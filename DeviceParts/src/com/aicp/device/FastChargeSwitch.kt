@@ -18,17 +18,15 @@
 package com.aicp.device
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.provider.Settings
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
-import androidx.preference.PreferenceManager
 
 class FastChargeSwitch(context: Context) : OnPreferenceChangeListener {
-    private val mContext: Context
+    private val mContext: Context = context
     override fun onPreferenceChange(preference: Preference?, newValue: Any): Boolean {
         val enabled = newValue as Boolean
-        Settings.System.putInt(mContext.getContentResolver(), SETTINGS_KEY, if (enabled) 1 else 0)
+        Settings.System.putInt(mContext.contentResolver, SETTINGS_KEY, if (enabled) 1 else 0)
         Utils.writeValueSimple(file, if (enabled) "1" else "0")
         return true
     }
@@ -49,7 +47,4 @@ class FastChargeSwitch(context: Context) : OnPreferenceChangeListener {
         }
     }
 
-    init {
-        mContext = context
-    }
 }

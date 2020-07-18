@@ -22,32 +22,36 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 
-class TouchscreenGestureSettingsFragment : PreferenceFragment() {
+class TouchscreenGestureSettingsFragment : PreferenceFragmentCompat() {
     private var mOffscreenGestureFeedbackSwitch: TwoStatePreference? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.gesture_panel)
-        val actionBar: ActionBar = getActivity().getActionBar()
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        val actionBar: ActionBar? = activity?.actionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         mOffscreenGestureFeedbackSwitch = findPreference(HtcGestureService.KEY_GESTURE_HAPTIC_FEEDBACK) as TwoStatePreference?
-        mOffscreenGestureFeedbackSwitch!!.setChecked(Settings.System.getInt(getContext().getContentResolver(),
-                "Settings.System." + HtcGestureService.GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, 1) !== 0)
+        mOffscreenGestureFeedbackSwitch!!.isChecked = Settings.System.getInt(
+            context?.contentResolver,
+            "Settings.System." + HtcGestureService.GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, 1) != 0
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         if (preference === mOffscreenGestureFeedbackSwitch) {
-            Settings.System.putInt(getContext().getContentResolver(),
-                    "Settings.System." + HtcGestureService.GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, if (mOffscreenGestureFeedbackSwitch!!.isChecked()) 1 else 0)
+            val putInt = Settings.System.putInt(
+                context?.contentResolver,
+                "Settings.System." + HtcGestureService.GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME,
+                if (mOffscreenGestureFeedbackSwitch!!.isChecked) 1 else 0
+            )
             return true
         }
         return super.onPreferenceTreeClick(preference)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.getItemId() === android.R.id.home) {
-            getActivity().onBackPressed()
+        if (item.itemId == android.R.id.home) {
+            activity?.onBackPressed()
             return true
         }
         return false

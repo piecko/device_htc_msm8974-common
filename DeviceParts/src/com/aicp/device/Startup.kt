@@ -39,7 +39,7 @@ class Startup : BroadcastReceiver() {
         }
 
         fun restoreAfterUserSwitch(context: Context) {
-            val enabled = Settings.System.getInt(context.getContentResolver(), FastChargeSwitch.Companion.SETTINGS_KEY, 0) != 0
+            val enabled = Settings.System.getInt(context.contentResolver, FastChargeSwitch.Companion.SETTINGS_KEY, 0) != 0
             restore(FastChargeSwitch.Companion.file, enabled)
             VibratorStrengthPreference.Companion.restore(context)
             BacklightDimmerPreference.Companion.restore(context)

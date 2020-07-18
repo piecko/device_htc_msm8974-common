@@ -20,21 +20,21 @@ package com.aicp.device
 
 import android.os.Bundle
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 
-class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListener {
+class DeviceSettings : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
     private var mVibratorStrength: VibratorStrengthPreference? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.main, rootKey)
         mVibratorStrength = findPreference(KEY_VIBSTRENGTH) as VibratorStrengthPreference?
         if (mVibratorStrength != null) {
-            mVibratorStrength!!.setEnabled(VibratorStrengthPreference.Companion.isSupported)
+            mVibratorStrength!!.isEnabled = VibratorStrengthPreference.Companion.isSupported
         }
         mFastChargeSwitch = findPreference(KEY_FASTCHARGE) as TwoStatePreference?
-        mFastChargeSwitch!!.setEnabled(FastChargeSwitch.Companion.isSupported)
-        mFastChargeSwitch!!.setChecked(FastChargeSwitch.Companion.isCurrentlyEnabled())
-        mFastChargeSwitch!!.setOnPreferenceChangeListener(FastChargeSwitch(getContext()))
+        mFastChargeSwitch!!.isEnabled = FastChargeSwitch.Companion.isSupported
+        mFastChargeSwitch!!.isChecked = FastChargeSwitch.Companion.isCurrentlyEnabled()
+        mFastChargeSwitch!!.onPreferenceChangeListener = context?.let { FastChargeSwitch(it) }
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {

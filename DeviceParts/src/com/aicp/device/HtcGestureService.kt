@@ -28,12 +28,11 @@ import android.hardware.camera2.CameraManager.TorchCallback
 import android.media.AudioManager
 import android.os.*
 import android.os.PowerManager.WakeLock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.HapticFeedbackConstants
-import androidx.core.content.ContextCompat.getSystemService
 import com.aicp.device.GestureMotionSensor.Companion.getInstance
 import com.aicp.device.GestureMotionSensor.GestureMotionSensorListener
 import com.android.internal.util.aicp.AicpVibe
@@ -76,7 +75,7 @@ class HtcGestureService : Service() {
         )
         super.onCreate()
         mContext = this
-        mGestureSensor = getInstance(mContext)
+        mGestureSensor = getInstance(mContext as HtcGestureService)
         mGestureSensor!!.registerListener(mListener)
         val sharedPrefs =
             PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -90,8 +89,8 @@ class HtcGestureService : Service() {
         mCameraManager!!.registerTorchCallback(mTorchCallback, null)
         mTorchCameraId = torchCameraId
         mAudioManager =
-            mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        mVibrator = mContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            (mContext as HtcGestureService).getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        mVibrator = (mContext as HtcGestureService).getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -217,12 +216,12 @@ class HtcGestureService : Service() {
 
     private fun wakeDisplay() {
         mSensorWakeLock!!.acquire(SENSOR_WAKELOCK_DURATION.toLong())
-        mPowerManager.wakeUp(SystemClock.uptimeMillis())
+        mPowerManager.wakeUp(SystemClock.uptimeMillis(), PowerManager.WakeReason.WAKE_REASON_GESTURE , "htcGestureServiceWakeupCall")
     }
 
     private fun launchFlashlight() {
         mSensorWakeLock!!.acquire(SENSOR_WAKELOCK_DURATION.toLong())
-        mPowerManager.wakeUp(SystemClock.uptimeMillis())
+        mPowerManager.wakeUp(SystemClock.uptimeMillis(), PowerManager.WakeReason.WAKE_REASON_GESTURE , "htcGestureServiceWakeupCall")
         try {
             mCameraManager!!.setTorchMode(mTorchCameraId!!, !mTorchEnabled)
         } catch (e: CameraAccessException) {

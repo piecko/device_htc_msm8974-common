@@ -18,12 +18,12 @@
 package com.aicp.device
 
 import android.os.Bundle
-import android.preference.PreferenceActivity
+import androidx.fragment.app.FragmentActivity
 
-class TouchscreenGestureSettingsActivity : PreferenceActivity() {
-    override protected fun onCreate(savedInstanceState: Bundle?) {
+class TouchscreenGestureSettingsActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
+        supportFragmentManager.beginTransaction().replace(android.R.id.content,
                 TouchscreenGestureSettingsFragment()).commit()
     }
 }

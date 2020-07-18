@@ -83,7 +83,12 @@ object Utils {
     }
 
     fun fileWritable(filename: String?): Boolean {
-        return fileExists(filename) && File(filename).canWrite()
+        return if(filename == null){
+            false
+        } else {
+            fileExists(filename) && File(filename).canWrite()
+        }
+
     }
 
     fun readLine(filename: String?): String? {
@@ -112,7 +117,7 @@ object Utils {
     fun getFileValueAsBoolean(filename: String?, defValue: Boolean): Boolean {
         val fileValue = readLine(filename)
         return if (fileValue != null) {
-            if (fileValue == "0") false else true
+            fileValue != "0"
         } else defValue
     }
 
